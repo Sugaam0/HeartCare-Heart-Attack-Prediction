@@ -25,7 +25,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://heartcare-heart-attack-prediction-production.up.railway.app/']
+ALLOWED_HOSTS = ['heartcare-heart-attack-prediction-production.up.railway.app']
 
 
 
