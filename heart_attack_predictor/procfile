@@ -1,1 +1,1 @@
-web: gunicorn heart_attack_predictor.wsgi
+web: gunicorn heart_attack_predictor.wsgi --bind 0.0.0.0:8080
