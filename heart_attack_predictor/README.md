@@ -4,24 +4,25 @@ Setup Instructions
 
 Clone the repository
 Create a virtual environment:
-
+```
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
+source venv/bin/activate
+# On Windows: venv\Scripts\activate
+```
 
 Install dependencies:
-
+```
 pip install -r requirements.txt
-
+```
 
 Place your trained model file (heart_attack_model.pkl) in predictor/static/model/
 
 Run migrations:
 
-
+```
 python manage.py makemigrations
 python manage.py migrate
-
+```
 
 Collect static files:
 
@@ -29,9 +30,9 @@ python manage.py collectstatic
 
 
 Start the development server:
-
+```
 python manage.py runserver
-
+```
 
 Access the application at http://localhost:8000
 
