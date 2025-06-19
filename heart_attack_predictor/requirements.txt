@@ -7,3 +7,4 @@ scikit-learn==1.6.1
 matplotlib==3.10.3
 joblib==1.5.1
 python-decouple==3.8
+dj-database-url
