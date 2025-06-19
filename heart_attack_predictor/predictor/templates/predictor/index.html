@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Hero Section -->
+<section id="home" class="py-16 bg-gradient-to-r from-blue-50 to-gray-50 rounded-2xl mb-12" aria-labelledby="hero-heading">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center px-4 sm:px-6 lg:px-8">
+        <div>
+            <h1 id="hero-heading" class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Heart Attack Risk Predictor</h1>
+            <p class="text-lg text-gray-600 mb-6">Assess your heart health with our AI-driven tool, using medical parameters for accurate risk prediction.</p>
+            <a href="#predict" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                Get Started
+            </a>
+        </div>
+        <div>
+            <img src="https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg?auto=compress&cs=tinysrgb&w=500&h=500" alt="Doctor assessing heart health" class="w-full max-w-md rounded-xl shadow-lg mx-auto">
+        </div>
+    </div>
+</section>
+
+<!-- Prediction Form Section -->
+<section id="predict" class="py-12 mb-12" aria-labelledby="predict-heading">
+    <div class="custom-form-container bg-gradient-to-br from-white to-blue-50 rounded-3xl shadow-2xl p-10 max-w-4xl mx-auto border border-blue-100">
+        <h2 id="predict-heading" class="text-4xl font-bold text-gray-800 mb-8 text-center">Assess Your Heart Risk</h2>
+
+        {% if error %}
+            <div class="custom-alert bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-xl mb-8 animate-pulse" role="alert">
+                <span>{{ error }}</span>
+            </div>
+        {% endif %}
+
+        {% if prediction %}
+            <div class="custom-alert bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-xl mb-8 animate-pulse" role="alert">
+                <span>Prediction: <strong>{{ prediction }}</strong></span>
+            </div>
+        {% endif %}
+
+        <form method="POST" class="space-y-8" aria-label="Heart attack risk prediction form">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for field in form %}
+                    <div class="custom-form-group relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-gray-700 flex items-center">
+                                <i class="fas fa-{{ field.label|lower|slugify }}-icon mr-2 text-blue-500"></i>{{ field.label }}
+                            </label>
+                            <button type="button" class="info-button text-blue-600 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-full w-5 h-5 flex items-center justify-center"
+                                    data-field="{% if field.label == 'Age' %}age{% elif field.label == 'Gender' %}gender{% elif field.label == 'Heart Rate (bpm)' %}heart_rate{% elif field.label == 'Systolic Blood Pressure (mmHg)' %}systolic-blood-pressure{% elif field.label == 'Diastolic Blood Pressure (mmHg)' %}diastolic-blood-pressure{% elif field.label == 'Blood Sugar (mg/dL)' %}blood-sugar{% elif field.label == 'CK-MB (ng/mL)' %}ck-mb{% elif field.label == 'Troponin (ng/mL)' %}troponin{% else %}unknown{% endif %}"
+                                    aria-label="Information about {{ field.label }}">
+                                <i class="fas fa-info-circle text-sm"></i>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            {{ field }}
+                            <i class="fas fa-{{ field.label|lower|slugify }}-icon absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-300 opacity-50"></i>
+                        </div>
+                        {% if field.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="flex justify-center">
+                <button type="submit" class="custom-submit inline-flex items-center px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-lg font-semibold rounded-full hover:from-blue-700 hover:to-blue-900 transition duration-300 focus:outline-none focus:ring-4 focus:ring-blue-200 shadow-lg transform hover:scale-105">
+                    <i class="fas fa-stethoscope mr-3"></i>Predict Risk
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- Info Modal -->
+<div id="info-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+    <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 transform scale-95 transition-transform duration-200">
+        <div class="flex justify-between items-center mb-4">
+            <h3 id="modal-title" class="text-lg font-semibold text-gray-800"></h3>
+            <button id="modal-close" class="text-gray-600 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-full w-6 h-6 flex items-center justify-center" aria-label="Close modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <p id="modal-content" class="text-sm text-gray-600"></p>
+    </div>
+</div>
+
+<!-- About Section -->
+<section id="about" class="py-12 mb-12" aria-labelledby="about-heading">
+    <div class="max-w-3xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+        <h2 id="about-heading" class="text-3xl font-bold text-gray-800 mb-6">Why Early Detection Matters</h2>
+        <p class="text-lg text-gray-600 mb-6">Heart disease is a leading cause of death worldwide. Early detection through AI-driven tools like HeartCare can identify risks before symptoms appear, enabling timely intervention. Our machine learning model analyzes key medical parameters to provide accurate, personalized risk assessments.</p>
+        <img src="{% static 'images/heart.jpg' %}" alt="Healthy heart illustration" class="w-full max-w-md mx-auto rounded-xl shadow-lg">
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-12" aria-labelledby="contact-heading">
+    <div class="max-w-3xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+        <h2 id="contact-heading" class="text-3xl font-bold text-gray-800 mb-6">Get in Touch</h2>
+        <p class="text-lg text-gray-600 mb-8">Have questions? Contact our team for support.</p>
+        <a href="mailto:support@heartcare.ai" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <i class="fas fa-envelope mr-2"></i>Contact Us
+        </a>
+    </div>
+</section>
+
+{% endblock %}
